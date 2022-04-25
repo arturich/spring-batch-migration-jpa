@@ -25,9 +25,9 @@ public class UniversityReader {
 		
 		// We can receive this parameter as arguments or  setting on
 		// properties.
-		jpaCursorItemReader.setCurrentItemCount(2000);
+	//	jpaCursorItemReader.setCurrentItemCount(2000);
 		
-		jpaCursorItemReader.setMaxItemCount(3000);
+	//	jpaCursorItemReader.setMaxItemCount(3000);
 		
 		return jpaCursorItemReader;
 			

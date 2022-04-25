@@ -1,6 +1,7 @@
 package com.citalin.migration.springbatchmigration.jobs;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -44,6 +45,9 @@ public class MigrationJob {
 	@Autowired
 	private UniversitySubjectProcessor universitySubjectProcessor;
 	
+	@Autowired
+	SkipListener<SubjectPostgre,Subject> skipListener;
+	
 	
 //	@Bean
 	public Job universityMigrationJob()
@@ -51,6 +55,7 @@ public class MigrationJob {
 		return jobBuilderFactory.get("migrationJob")
 				.incrementer(new RunIdIncrementer())
 				.start(migrationStep())
+				.next(subjectMigrationStep())
 				.build();
 	}
 	
@@ -90,10 +95,10 @@ public class MigrationJob {
 				.writer(universityWriter.jpaSubjectItemWriter())	
 				.faultTolerant()
 				.skip(Throwable.class)
-				.skipLimit(1000000)
+				.skipLimit(2000000)
 				.retryLimit(3)
 				.retry(Throwable.class)		
-				.listener(skipListenerImpl)
+				.listener(skipListener)
 				.transactionManager(jpaTransactionManager)
 				.build();
 			
